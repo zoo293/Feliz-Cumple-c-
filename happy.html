@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Tengo un regalo para ti, Carlita! 🎁</title>
+    <style>
+        /* --- ESTILOS GLOBALES --- */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f8 0%, #ffe0e9 100%);
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- CONTENEDOR DE LA CAJA (CENTRADO ABSOLUTO) --- */
+        #gift-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        #gift-instructions {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #d14771;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .gift-box {
+            width: 140px;
+            height: 140px;
+            background-color: #ff85a2;
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(209, 71, 113, 0.2);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .gift-box::before { content: ''; position: absolute; background-color: #f6d365; width: 24px; height: 100%; left: calc(50% - 12px); top: 0; border-radius: 2px; }
+        .gift-box::after { content: ''; position: absolute; background-color: #f6d365; width: 100%; height: 24px; left: 0; top: calc(50% - 12px); border-radius: 2px; }
+        .ribbon { width: 40px; height: 40px; background-color: #f6d365; position: absolute; top: -20px; left: calc(50% - 20px); border-radius: 50%; box-shadow: 20px 0 0 #f6d365; }
+        #click-count { margin-top: 25px; font-size: 1rem; color: #888; font-weight: 500; }
+
+
+        /* --- LAYOUT DE 3 COLUMNAS --- */
+        #birthday-content {
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            margin: 40px auto;
+            align-items: center;
+        }
+
+        #birthday-content.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- MARCOS PARA LAS IMÁGENES --- */
+        .frame-sketch {
+            border: 3px solid rgba(74, 74, 74, 0.5);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background-color: #fffbfe;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+        }
+
+        .img-placeholder {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        .totoro-img { width: 160px; }
+        .suga-img { width: 150px; }
+
+        /* --- IMAGEN DE LA FLOR DE LOTO --- */
+        .img-top-loto {
+            width: 280px; 
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 0 auto 20px auto;
+            display: block;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- COLUMNA CENTRAL (TARJETA DE TEXTO) --- */
+        .card {
+            background: #ffffff;
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 179, 198, 0.2);
+        }
+
+        h1 { color: #c73a61; font-size: 1.8rem; margin-top: 0; margin-bottom: 10px; font-weight: 700; line-height: 1.3; }
+        .sub { font-style: italic; color: #999; margin-bottom: 25px; font-size: 1rem; }
+        p { line-height: 1.6; font-size: 1rem; margin-bottom: 18px; color: #555; text-align: center; max-width: 100%; }
+        
+        .btn { background: linear-gradient(135deg, #ff85a2 0%, #d14771 100%); color: white; border: none; padding: 14px 32px; font-size: 1rem; border-radius: 25px; cursor: pointer; box-shadow: 0 6px 15px rgba(209, 71, 113, 0.25); transition: all 0.3s ease; margin-top: 15px; font-weight: 600; letter-spacing: 0.5px; outline: none; -webkit-tap-highlight-color: transparent; }
+        .btn:hover { box-shadow: 0 8px 20px rgba(209, 71, 113, 0.35); transform: translateY(-2px); }
+        
+        #secreto { display: none; margin-top: 25px; padding: 18px; background-color: #fff0f3; border-radius: 12px; font-size: 0.95rem; border: 1px solid #ffb3c6; width: 100%; line-height: 1.5; opacity: 0; transition: opacity 0.4s ease; }
+        #secreto.show { opacity: 1; }
+        #secreto strong { color: #d14771; }
+
+
+        /* --- AJUSTES OPTIMIZADOS PARA CELULAR --- */
+        @media (max-width: 768px) {
+            #birthday-content {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "card"
+                    "totoro"
+                    "otraimg";
+                gap: 20px;
+                margin: 10px auto;
+                padding: 10px;
+            }
+
+            .card { grid-area: card; }
+            .totoro-column { grid-area: totoro; }
+            .otraimg-column { grid-area: otraimg; }
+
+            .img-top-loto { width: 180px; margin-bottom: 15px; }
+            .frame-sketch { min-height: auto; padding: 15px; }
+            .totoro-img { width: 130px; }
+            .suga-img { width: 120px; }
+
+            h1 { font-size: 1.6rem; }
+            p { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="birthday-music" src="audio/nastelbom-happy-birthday-471481.mp3" loop></audio>
+
+    <div id="gift-container">
+        <div id="gift-instructions">🎁 ¡Un regalito especial para ti! 🎁<br> Dale 3 clics para abrirlo</div>
+        <div class="gift-box" id="gift" onclick="crecerYContar()">
+            <div class="ribbon"></div>
+        </div>
+        <div id="click-count">Clics: 0 / 3</div>
+    </div>
+
+    <div id="birthday-content">
+        
+        <div class="frame-sketch totoro-column">
+            <img class="img-placeholder totoro-img" src="imagenes/totoro.png" alt="Totoro">
+        </div>
+
+        <div class="card" id="birthday-card">
+            <img class="img-top-loto" src="imagenes/flor de loto.webp" alt="Flor de Loto">
+            
+            <h1>¡Feliz Cumpleaños, Carlita! 🎂🎉</h1>
+            <div class="sub">Para mi mejor amiga</div>
+            
+            <p>Aunque a veces nos peleemos o nos enojemos por chat, no cambio nuestra amistad por nada. Me encanta que podamos hablar de cosas súper serias y, al rato, de temas de lo más random que tal vez ni tienen sentido.</p>
+
+            <p>Pero, la verdad, solo me queda decirte: ¡Gracias! Gracias por estar ahí cuando necesito a alguien para cagarme de risa y, sobre todo, gracias por tener esa confianza conmigo de contarme lo que te pasa en tu día a día.</p>
+            
+            <p>Sé que a veces me tomo a broma muchas cosas de las que me dices, pero solo lo hago para que te olvides un poco de aquello que te aqueja. Sabes que puedes confiar en mí para cualquier cosa; sea lo más aburrido o insignificante, a mí me interesa porque eres una parte muy importante de mi camino.</p>
+
+            <p>Gracias por cada risa, por aguantar mis tonterías y por cruzarte en mi vida. Deseo de corazón que este año se te cumpla todo lo que quieres. Te quiero muchísimo, gracias por ser esa persona con la que puedo ser 100% yo, hoy y siempre.</p>
+
+            <button class="btn" onclick="toggleSecreto()">Haz clic aquí</button>
+            
+            <div id="secreto">
+                ⚠️ <strong>Nota mental:</strong> De el mas fiel de peru 🙏
+            </div>
+        </div>
+
+        <div class="frame-sketch otraimg-column">
+            <img class="img-placeholder suga-img" src="imagenes/yoongi.jpg" alt="Suga">
+        </div>
+
+    </div>
+
+    <script>
+        let clics = 0;
+
+        function crecerYContar() {
+            clics++;
+            const gift = document.getElementById('gift');
+            const clickCountText = document.getElementById('click-count');
+            const giftInstructions = document.getElementById('gift-instructions');
+            
+            gift.style.transform = `scale(${1 + clics * 0.12}) rotate(${clics % 2 === 0 ? '4deg' : '-4deg'})`;
+            clickCountText.innerText = `Clics: ${clics} / 3`;
+
+            if (clics === 1) { giftInstructions.innerHTML = "🎁 ¡Sigue, ya casi está! 🎁<br> Faltan 2 clics"; }
+            if (clics === 2) { giftInstructions.innerHTML = "🎁 ¡Un clic más y...! 🎁<br> ¡Casi explota!"; }
+
+            if (clics >= 3) {
+                // Ejecuta la música guardada en la carpeta audio
+                const audio = document.getElementById('birthday-music');
+                audio.play().catch(e => console.log("Audio en espera de interacción:", e));
+
+                const giftContainer = document.getElementById('gift-container');
+                giftContainer.style.opacity = '0';
+                giftContainer.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    giftContainer.style.display = 'none';
+                    const birthdayContent = document.getElementById('birthday-content');
+                    birthdayContent.style.display = 'grid';
+                    setTimeout(() => {
+                        birthdayContent.classList.add('show');
+                    }, 50);
+                }, 500);
+            }
+        }
+
+        function toggleSecreto() {
+            const secreto = document.getElementById('secreto');
+            const btn = document.querySelector('.card .btn');
+            
+            if (secreto.style.display === "none" || secreto.style.display === "") {
+                secreto.style.display = "block";
+                btn.innerText = "Ocultar nota";
+                setTimeout(() => { secreto.classList.add('show'); }, 10);
+            } else {
+                secreto.classList.remove('show');
+                btn.innerText = "Haz clic aquí";
+                setTimeout(() => { secreto.style.display = "none"; }, 400);
+            }
+        }
+    </script>
+
+</body>
+</html>
